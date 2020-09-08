@@ -3,4 +3,5 @@ TAG=latest
 BASE_TAG=base
 REP=docker.io/rndnet/core
 VER=$(date +"%Y-%m-%d")
-SERVER_EXT_PORT=6002
+SERVER_EXT_PORT=6000
+SERVER_CONTAINER_NAME=rndnet_server
