@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: kube-rndnet-server-service
+spec:
+  type: NodePort
+  clusterIP: 10.101.120.180
+  ports:
+    - port: 6000
+      targetPort: 6000
+      nodePort: 30000
+  selector:
+    app: kube-rndnet-server

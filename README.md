@@ -1,7 +1,6 @@
-# Core:scheduler
+# Kubernetes rndnet-server (core:server)
 
-Use rndnet-scheduler on kubernetes 
-
+Use rndnet-server as kubernetes pod service
 
 Build image (optionally)
 --------------------------
@@ -9,14 +8,13 @@ Build image (optionally)
 1. cd image
 2. ./build-upload.sh
 
+Install on kubernetes
+-------
+
+1. Modify server config in ca/rndnet_server.conf
+2. Modify server args and port in kube-rndnet-server.yaml
+3. Modify pods hostname in  kube-rndnet-server.yaml
+4. Modify or remove clusterIP and nodePort in ca/1-add-nodeport-service.yaml
+5. Run kube-preinstall.sh for secrets and service creating 
+6. Deploy server: kube-install.sh
     
-Install on kubernetes 
----------------------------
-
-1. Put valid rndnet scheduler key to `ca` directory as `rndnet_scheduler.key` or modify with valid key file name
-2. cd images; bash ca/0-add-key-as-secret.sh 
-3. ./kube-preinstall.sh
-
-4. Modify `--server` and `--user` params in container `args` string in `kuber-rndnet-scheduler.yaml`
-
-5. Run kube-install.sh
