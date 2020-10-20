@@ -1,0 +1,13 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: scheduler-list-pods
+subjects:
+  - kind: ServiceAccount
+    name: scheduler-sa
+    namespace: default
+roleRef:
+  kind: ClusterRole
+  name: list-pods
+  apiGroup: rbac.authorization.k8s.io
+

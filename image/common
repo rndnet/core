@@ -1,0 +1,5 @@
+#VER=`date +"%Y-%m-%d_%H-%M-%S"`
+TAG=uni
+REP=docker.io/rndnet/k8s-scheduler
+VER=$(date +"%Y-%m-%d")
+POD_NAME=kube-rndnet-scheduler

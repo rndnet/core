@@ -1,1 +1,0 @@
-Rndnet scheduler work directory

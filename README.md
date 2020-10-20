@@ -1,29 +1,22 @@
-# Core
+# Core:scheduler
 
-Use rndnet-server or rndnet-scheduler as standalone service
+Use rndnet-scheduler on kubernetes 
 
 
-Install
--------
+Build image (optionally)
+--------------------------
 
--  build.sh
+1. cd image
+2. ./build-upload.sh
 
-Use as server container
----------------------------
-
-1. Modify server params in files/rndnet/start-server.sh
-2. Modify server config in files/rndnet/rndnet_server.conf
-3. Modify server port in common file
-4. Interactive mode start: start-it-server.sh
-5. Daemon mode start: start-daemon-server.sh
     
-Use as scheduler container
+Install on kubernetes 
 ---------------------------
 
-1. Modify scheduler user or other params in files/rndnet/start-sched.sh
-2. Modify scheduler params in files/rndnet/rndnet-scheduler.json.
+1. Put valid rndnet scheduler key to `ca` directory as `rndnet_scheduler.key` or modify with valid key file name
+2. cd images; bash ca/0-add-key-as-secret.sh 
+3. ./kube-preinstall.sh
 
-3. Get/generate rndnet-scheduler.key and put it to files/rndnet/
+4. Modify `--server` and `--user` params in container `args` string in `kuber-rndnet-scheduler.yaml`
 
-4. Interactive mode start: start-it-sched.sh
-5. Daemon mode start: start-daemon-sched.sh
+5. Run kube-install.sh

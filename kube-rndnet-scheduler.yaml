@@ -1,0 +1,26 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  labels:
+    app: kube-rndnet-scheduler
+  name: kube-rndnet-scheduler
+spec:
+  serviceAccountName: scheduler-sa
+  containers:
+  - name: kube-rndnet-scheduler
+    image: docker.io/rndnet/k8s-scheduler:uni
+    imagePullPolicy: "Always"
+    args: ["--server", "https://server2.rndnet.net:5000", "--user", "sched_kube_epyc", "--pgpkey", "/etc/rndnet/secret.key"]
+    volumeMounts:
+    - name: sched-kube-epyc-key
+      mountPath: "/etc/rndnet/"
+      readOnly: true
+    workingDir: /  
+  dnsPolicy: Default
+  volumes:
+  - name: sched-kube-epyc-key
+    secret:
+     secretName: sched-kube-epyc-key
+     items:
+     - key: key
+       path: secret.key
