@@ -1,0 +1,4 @@
+epyc-host002:6432:*:bf_user:pass
+epyc-host002:6432:*:bf_admin:pass
+epyc-host002.rndnet.net:6432:*:bf_user:pass
+epyc-host002.rndnet.net:6432:*:bf_admin:pass

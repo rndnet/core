@@ -22,7 +22,7 @@ spec:
     ports:
     - containerPort: 6000
       protocol: TCP
-  nodeName: epyc-host004.rndnet.net
+  nodeName: epyc-host002.rndnet.net
   volumes:
   - name: rndnet-server-data-volume
     secret:

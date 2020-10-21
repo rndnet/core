@@ -2,8 +2,7 @@
 kubectl apply -f ca/1-add-nodeport-service.yaml
 
 kubectl get secrets
-kubectl get services
 kubectl get svc
-kubectl get clusterroles
-kubectl get clusterrolebindings
+#kubectl get clusterroles
+#kubectl get clusterrolebindings
 
