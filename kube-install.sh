@@ -1,5 +1,8 @@
 . common 
+
 kubectl create -f ${POD_NAME}.yaml
-kubectl get pods
+
+./kube-state.sh
+
 kubectl describe pods ${POD_NAME}
 
