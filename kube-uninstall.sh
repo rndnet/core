@@ -1,2 +1,2 @@
 . common
-kubectl delete pod/${POD_NAME}
+kubectl delete -f ${POD_NAME}.yaml
