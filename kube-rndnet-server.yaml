@@ -1,35 +1,45 @@
-apiVersion: v1
-kind: Pod
+apiVersion: apps/v1
+kind: Deployment
 metadata:
-  name: kube-rndnet-server
+  name: kube-rndnet-server-deployment
   labels:
     app: kube-rndnet-server
 spec:
-  containers:
-  - name: kube-rndnet-server
-    image: rndnet/server
-    imagePullPolicy: "Always"
-    args: ["--config", "/etc/rndnet/rndnet_server.conf", "--accesslog", "/var/log/rndnet_server.log", "--bind", "0.0.0.0:6000", "--no-ssl", "--no-cleanup"]
-    volumeMounts:
-    - name: rndnet-server-data-volume
-      mountPath: "/etc/rndnet/"
-      readOnly: true
-    - name: rndnet-server-data-volume
-      mountPath: "/root/.pgpass"
-      subPath: ".pgpass"
-      readOnly: true
-    workingDir: /  
-    ports:
-    - containerPort: 6000
-      protocol: TCP
-  nodeName: epyc-host002.rndnet.net
-  volumes:
-  - name: rndnet-server-data-volume
-    secret:
-     secretName: rndnet-server-data
-     items:
-     - key: conf
-       path: rndnet_server.conf
-     - key: pgpass
-       path: .pgpass
-       mode: 0600
+  replicas: 1
+  selector:
+    matchLabels:
+      app: kube-rndnet-server
+  template:
+    metadata:
+      labels:
+        app: kube-rndnet-server
+    spec:
+      containers:
+      - name: kube-rndnet-server
+        image: rndnet/server
+        imagePullPolicy: "Always"
+        args: ["--config", "/etc/rndnet/rndnet_server.conf", "--accesslog", "/var/log/rndnet_server.log", "--bind", "0.0.0.0:6000", "--no-ssl", "--no-cleanup", "-w", "15"]
+        volumeMounts:
+        - name: rndnet-server-data-volume
+          mountPath: "/etc/rndnet/"
+          readOnly: true
+        - name: rndnet-server-data-volume
+          mountPath: "/root/.pgpass"
+          subPath: ".pgpass"
+          readOnly: true
+        workingDir: /
+        ports:
+        - containerPort: 6000
+          protocol: TCP
+      #nodeName: epyc-host001.rndnet.net
+      #dnsPolicy: Defaul
+      volumes:
+      - name: rndnet-server-data-volume
+        secret:
+         secretName: rndnet-server-data
+         items:
+         - key: conf
+           path: rndnet_server.conf
+         - key: pgpass
+           path: .pgpass
+           mode: 0600
