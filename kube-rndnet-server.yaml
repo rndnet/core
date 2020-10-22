@@ -18,7 +18,7 @@ spec:
       - name: kube-rndnet-server
         image: rndnet/server
         imagePullPolicy: "Always"
-        args: ["--config", "/etc/rndnet/rndnet_server.conf", "--accesslog", "/var/log/rndnet_server.log", "--bind", "0.0.0.0:6000", "--no-ssl", "--no-cleanup", "-w", "15"]
+        args: ["--config", "/etc/rndnet/rndnet_server.conf", "--accesslog", "/var/log/rndnet_server.log",  "--errorlog", "/var/log/rndnet_server_err.log",  "--bind", "0.0.0.0:6000", "--no-ssl", "--no-cleanup", "-w", "15"]
         volumeMounts:
         - name: rndnet-server-data-volume
           mountPath: "/etc/rndnet/"
