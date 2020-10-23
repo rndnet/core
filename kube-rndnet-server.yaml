@@ -31,6 +31,11 @@ spec:
         ports:
         - containerPort: 6000
           protocol: TCP
+        resources:
+          limits:
+            memory: 16Gi
+          requests:
+            memory: 2Gi
       #nodeName: epyc-host001.rndnet.net
       #dnsPolicy: Defaul
       volumes:
