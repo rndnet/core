@@ -19,7 +19,7 @@ spec:
       - name: kube-rndnet-scheduler
         image: docker.io/rndnet/k8s-scheduler:uni
         imagePullPolicy: "Always"
-        args: ["--server", "https://server2.rndnet.net:5000", "--user", "sched_kube_epyc", "--pgpkey", "/etc/rndnet/secret.key"]
+        args: ["--server", "https://server2.rndnet.net:5000", "--user", "sched_kube_epyc", "--pgpkey", "/etc/rndnet/secret.key", "--params", "docker_image=rndnet/python-bfj:apps"]
         #args: ["--server", "https://server2.rndnet.net:5000", "--user", "sched_kube_tahiti", "--params", "gpu_vendor=amd", "--pgpkey", "/etc/rndnet/secret.key"] # or default "gpu_vendor=nvidia"
         volumeMounts:
         - name: sched-kube-epyc-key
