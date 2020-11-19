@@ -13,8 +13,10 @@ Install on kubernetes
 
 1. Modify server config in ca/rndnet_server.conf
 2. Modify server args and port in kube-rndnet-server.yaml
-3. Modify pods hostname in  kube-rndnet-server.yaml
-4. Modify or remove clusterIP and nodePort in ca/1-add-nodeport-service.yaml
-5. Run kube-preinstall.sh for secrets and service creating 
-6. Deploy server: kube-install.sh
+3. Modify pods hostname in  kube-rndnet-server.yaml (optionally)
+4. Run kube-preinstall.sh for secrets and service creating 
+ - ca/0-add-config-as-secret.sh - put server config to kubernetes secrets;
+ - ca/1-add-nodeport-service.yaml (optionally) - create nodeport service if need access from corporate  network, modify or remove clusterIP and nodePort;
+ - ca/2-add-external-service.yaml (optionally) - create external service if need access from internet or you can use kubernetes nginx ingress controller feature for this purpose.
+5. Deploy server: kube-install.sh
     
