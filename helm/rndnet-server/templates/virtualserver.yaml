@@ -10,6 +10,7 @@ metadata:
 spec:
   {{- with .Values.virtualserver }}
   host: {{ .host }}
+  ingressClassName: {{ .ingressClassName }}
   http-snippets: {{ .http_snippets | quote }}
   tls:
     secret: {{ .tls.secret  }}

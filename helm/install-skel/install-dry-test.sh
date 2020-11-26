@@ -3,10 +3,12 @@ helm install -name $name  --dry-run --debug -n $ns ./rndnet-server \
   --set virtualserver.enabled=true  \
   --set virtualserver.host='server.yourdomain' \
   --set virtualserver.tls.secret='rndnet-nginx-cert' \
+  --set virtualserver.ingressClassName='nginx' \
   --set service.externalIPs={'XXX.XXX.XXX.XX'} \
   --set server.workers=20 \
   --set server.cleanup=false \
   --set server.conf.connect.host='host1' \
+  --set server.conf.connect.dbname='cloud' \
   --set server.conf.connect.port=5432 \
   --set server.conf.email.MAIL_DEFAULT_SENDER='server@yourdomain'  \
   --set server.conf.email.MAIL_SERVER='smtp_host' \
@@ -17,6 +19,5 @@ helm install -name $name  --dry-run --debug -n $ns ./rndnet-server \
   --set resources.requests.memory='2Gi' \
   --set resources.requests.cpu=10 \
   -f values.yaml
-
 
 # --set service.type=NodePort

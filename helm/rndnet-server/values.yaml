@@ -69,6 +69,7 @@ service:
 virtualserver:
   enabled: false
   host: localhost
+  ingressClassName: nginx
   http_snippets: |
     gzip on;
     gzip_min_length 100;
