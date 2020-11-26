@@ -19,4 +19,6 @@ Install on kubernetes
  - ca/1-add-nodeport-service.yaml (optionally) - create nodeport service if need access from corporate  network, modify or remove clusterIP and nodePort;
  - ca/2-add-external-service.yaml (optionally) - create external service if need access from internet or you can use kubernetes nginx ingress controller feature for this purpose.
 5. Deploy server: kube-install.sh
+
+6. Modify and install ca/3-rndnet-nginx-vs.yaml if need https access through nginx ingress.
     

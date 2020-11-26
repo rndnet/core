@@ -1,0 +1,33 @@
+# https://docs.nginx.com/nginx-ingress-controller/configuration/virtualserver-and-virtualserverroute-resourcesm
+
+apiVersion: k8s.nginx.org/v1
+kind: VirtualServer
+metadata:
+  name: rndnet-nginx-vs
+spec:
+  host: server.yourdomain
+  http-snippets: |
+       gzip on;
+       gzip_min_length 100;
+       gzip_proxied any;
+       gzip_types application/x-binary application/json;
+  tls:                          # enable listener on 443
+    secret: rndnet-nginx-cert
+  upstreams:
+  - name: rndnet-server
+    service: kube-rndnet-server-service
+    port: 6000
+    fail-timeout: 0s
+    buffering: false           # proxy_buffering off;
+    client-max-body-size: 0m
+    connect-timeout: 30000s    # proxy_connect_timeout
+    send-timeout: 30000s       # proxy_send_timeout
+    read-timeout: 30000s       # proxy_read_timeout
+    keepalive: 0
+    #tls:
+    #  enable: true            # pass to upstream as https not http
+  routes:
+  - path: /
+    action:
+      pass: rndnet-server
+
