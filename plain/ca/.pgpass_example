@@ -1,0 +1,4 @@
+host1.rndnet.net:*:*:bf_user:pass
+host1.rndnet.net:*:*:bf_admin:pass
+host1:*:*:bf_user:pass
+host1:*:*:bf_admin:pass

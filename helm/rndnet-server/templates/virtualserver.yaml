@@ -1,0 +1,35 @@
+{{- if .Values.virtualserver.enabled -}}
+# https://docs.nginx.com/nginx-ingress-controller/configuration/virtualserver-and-virtualserverroute-resourcesm
+
+apiVersion: k8s.nginx.org/v1
+kind: VirtualServer
+metadata:
+  name: {{ include "rndnet-server.fullname" . }}
+  labels:
+    {{- include "rndnet-server.labels" . | nindent 4 }}
+spec:
+  {{- with .Values.virtualserver }}
+  host: {{ .host }}
+  http-snippets: {{ .http_snippets | quote }}
+  tls:
+    secret: {{ .tls.secret  }}
+  {{- end }}
+  upstreams:
+  - name: {{ include "rndnet-server.fullname" . }}
+    service: {{ include "rndnet-server.fullname" . }}
+    port: {{ .Values.server.port }}
+    {{- with .Values.virtualserver.upstreams }}
+    fail-timeout: {{ .fail_timeout }}
+    buffering: {{ .buffering }}
+    client-max-body-size: {{ .client_max_body_size }}
+    connect-timeout: {{ .connect_timeout }}
+    send-timeout: {{ .send_timeout }}
+    read-timeout: {{ .read_timeout }}
+    keepalive:  {{ int .connect_timeout }}
+    {{- end }}
+  routes:
+  - path: /
+    action:
+      pass: {{ include "rndnet-server.fullname" . }}
+
+{{- end }}

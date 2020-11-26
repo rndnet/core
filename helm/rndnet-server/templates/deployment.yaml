@@ -1,0 +1,88 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "rndnet-server.fullname" . }}
+  labels:
+    {{- include "rndnet-server.labels" . | nindent 4 }}
+spec:
+{{- if not .Values.autoscaling.enabled }}
+  replicas: {{ .Values.replicaCount }}
+{{- end }}
+  selector:
+    matchLabels:
+      {{- include "rndnet-server.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+    {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+      labels:
+        {{- include "rndnet-server.selectorLabels" . | nindent 8 }}
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "rndnet-server.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      containers:
+        - name: {{ .Chart.Name }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          {{- with .Values.server }}
+          args: ["--config", "{{ .config }}", "--accesslog", "{{ .accesslog }}", "--errorlog", "{{ .errorlog }}", "--bind", "0.0.0.0:{{ .port }}" {{- if .workers   }}, "-w", "{{ .workers }}" {{- end }} {{- if not .ssl  }}, "--no-ssl"{{- end }}{{- if not .cleanup  }}, "--no-cleanup"{{- end }} ]
+          {{- end }}
+          volumeMounts:
+          - name: rndnet-server-data-volume
+            mountPath: "/etc/rndnet/"
+            readOnly: true
+          - name: rndnet-server-data-volume
+            mountPath: "/root/.pgpass"
+            subPath: ".pgpass"
+            readOnly: true
+          workingDir: /
+          ports:
+          - containerPort:  {{ .Values.server.port }}
+            protocol: TCP
+          #livenessProbe:
+          #  httpGet:
+          #    path: /
+          #    port: http
+          #readinessProbe:
+          #  httpGet:
+          #    path: /
+          #    port: http
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+      {{- if .Values.hostAliases }}
+      hostAliases:
+        {{- toYaml .Values.hostAliases | nindent 8 }}
+      {{- end }}
+      volumes:
+      - name: rndnet-server-data-volume
+        secret:
+          secretName: {{ include "rndnet-server.fullname" . }}
+          items:
+          - key: conf
+            path: rndnet_server.conf
+          - key: pgpass
+            path: .pgpass
+            mode: 0600
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+
+

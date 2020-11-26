@@ -1,2 +1,6 @@
 *.key
 *.log
+helm/common
+helm/*values.yaml
+helm/install-dry-test.sh
+helm/install.sh

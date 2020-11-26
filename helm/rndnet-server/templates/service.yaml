@@ -1,0 +1,23 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "rndnet-server.fullname" . }}
+  labels:
+    {{- include "rndnet-server.labels" . | nindent 4 }}
+spec:
+  type: {{ .Values.service.type }}
+  ports:
+    - port: {{ .Values.server.port }}
+      targetPort: {{ .Values.server.port }}
+      {{- if eq .Values.service.type "NodePort" }}
+      nodePort: {{ .Values.service.nodePort }}
+      {{- end }}
+      protocol: TCP
+  {{- if .Values.service.externalIPs }}
+  externalIPs: 
+    {{- range .Values.service.externalIPs }}
+    - {{ . }}
+    {{- end }}
+  {{- end }}
+  selector:
+    {{- include "rndnet-server.selectorLabels" . | nindent 4 }}

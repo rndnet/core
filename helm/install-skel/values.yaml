@@ -1,0 +1,9 @@
+hostAliases: 
+- ip: "10.100.2.2"
+  hostnames:
+  - "host002"
+  - "host002.rndnet.net"
+- ip: "10.100.2.4"
+  hostnames:
+  - "host004"
+  - "host004.rndnet.net"

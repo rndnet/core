@@ -1,0 +1,119 @@
+# Default values for rndnet-server.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+replicaCount: 1
+
+image:
+  repository: rndnet/server
+  pullPolicy: Always
+  # Overrides the image tag whose default is the chart appVersion.
+  tag: "latest"
+
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: ""
+
+serviceAccount:
+  # Specifies whether a service account should be created
+  create: false
+  # Annotations to add to the service account
+  annotations: {}
+  # The name of the service account to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name: ""
+
+podAnnotations: {}
+
+podSecurityContext: {}
+  # fsGroup: 2000
+
+securityContext: {}
+  # capabilities:
+  #   drop:
+  #   - ALL
+  # readOnlyRootFilesystem: true
+  # runAsNonRoot: true
+  # runAsUser: 1000
+
+
+resources: {}
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  # limits:
+  #   cpu: 100m
+  #   memory: 128Mi
+  # requests:
+  #   cpu: 100m
+  #   memory: 128Mi
+
+autoscaling:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 100
+  targetCPUUtilizationPercentage: 80
+  # targetMemoryUtilizationPercentage: 80
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
+
+service:
+  type: ClusterIP
+  nodePort: 30000
+
+virtualserver:
+  enabled: false
+  host: localhost
+  http_snippets: |
+    gzip on;
+    gzip_min_length 100;
+    gzip_proxied any;
+    gzip_types application/x-binary application/json;
+  tls:                          # enable listener on 443
+    secret: rndnet-nginx-cert
+  upstreams:
+    fail_timeout: 0s
+    buffering: false           # proxy_buffering off;
+    client_max_body_size: 0m
+    connect_timeout: 30000s    # proxy_connect_timeout
+    send_timeout: 30000s       # proxy_send_timeout
+    read_timeout: 30000s       # proxy_read_timeout
+    keepalive: 0
+
+server:
+  port: 6000         # --bind 0.0.0.0:6000
+  #workers: 10       # -w 10   
+  ssl: false         # set --no-ssl if ssl=false
+  cleanup: true      # set --no-cleanupr if cleanup=false
+  config:  "/etc/rndnet/rndnet_server.conf"    # --config     "/etc/rndnet/rndnet_server.conf"
+  accesslog: "/var/log/rndnet_server.log"      # --accesslog  "/var/log/rndnet_server.log"
+  errorlog:  "/var/log/rndnet_server_err.log"  # --errorlog   "/var/log/rndnet_server_err.log"
+  conf:
+    connect:
+      dbname: "cloud"
+      user: "bf_user"
+      host: "localhost"
+      port: "5432"
+    email:
+      MAIL_DEFAULT_SENDER: "rndnet_server"
+      MAIL_SERVER: "smtp"
+      MAIL_PORT: 25
+      MAIL_USE_SSL: false
+    rabbitmq: "amqp://user:pass@locahost:5672/%2F"
+  pgpass: |
+   localhost:*:*:bf_user:pass
+   localhost:*:*:bf_admin:pass
+ 
+hostAliases: []
+#hostAliases: 
+#- ip: "10.10.0.1"
+#  hostnames:
+#  - "host1"
+#- ip: "10.100.0.2"
+#  hostnames:
+#  - "host2"

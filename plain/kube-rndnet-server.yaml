@@ -18,7 +18,8 @@ spec:
       - name: kube-rndnet-server
         image: rndnet/server
         imagePullPolicy: "Always"
-        args: ["--config", "/etc/rndnet/rndnet_server.conf", "--accesslog", "/var/log/rndnet_server.log",  "--errorlog", "/var/log/rndnet_server_err.log",  "--bind", "0.0.0.0:6000", "--no-ssl", "--no-cleanup", "-w", "15"]
+        #args: ["--config", "/etc/rndnet/rndnet_server.conf", "--accesslog", "/var/log/rndnet_server.log",  "--errorlog", "/var/log/rndnet_server_err.log",  "--bind", "0.0.0.0:6000", "--no-ssl", "--no-cleanup"]
+        args: ["--config", "/etc/rndnet/rndnet_server.conf", "--accesslog", "/var/log/rndnet_server.log",  "--errorlog", "/var/log/rndnet_server_err.log",  "--bind", "0.0.0.0:6000", "--no-ssl", "--no-cleanup", "-w", "10"]
         volumeMounts:
         - name: rndnet-server-data-volume
           mountPath: "/etc/rndnet/"
@@ -34,9 +35,18 @@ spec:
         resources:
           limits:
             memory: 16Gi
+            cpu: 20
           requests:
             memory: 2Gi
-      #nodeName: epyc-host001.rndnet.net
+            cpu: 10
+      #hostAliases:
+      #- ip: "10.100.1.1"
+      #  hostnames:
+      #  - "host1"
+      #- ip: "10.100.1.2"
+      #    hostnames:
+      #    - "host2"
+      #nodeName: host1
       #dnsPolicy: Defaul
       volumes:
       - name: rndnet-server-data-volume
