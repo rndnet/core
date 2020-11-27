@@ -12,4 +12,4 @@ if [ $c -gt 1 ]; then
 fi
 
 n=$(eval "$cmd")
-kubectl rollout restart deployments/$n
+kubectl rollout restart deployments/$n -n $ns

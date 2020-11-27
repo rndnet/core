@@ -12,4 +12,4 @@ if [ $c -gt 1 ]; then
 fi
 
 n=$(eval "$cmd")
-kubectl logs $n 
+kubectl logs $n -n $ns 
