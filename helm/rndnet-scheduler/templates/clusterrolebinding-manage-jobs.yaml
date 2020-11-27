@@ -1,0 +1,14 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: {{ include "rndnet-scheduler.fullname" . | printf "%s-manage-jobs" }}
+  labels:
+    {{- include "rndnet-scheduler.labels" . | nindent 4 }}
+subjects:
+  - kind: ServiceAccount
+    name:  {{ include "rndnet-scheduler.serviceAccountName" . }}
+    namespace: {{ .Release.Namespace }}
+roleRef:
+  kind: ClusterRole
+  name:  {{ include "rndnet-scheduler.fullname" . | printf "%s-manage-jobs" }}
+  apiGroup: rbac.authorization.k8s.io
