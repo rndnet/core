@@ -34,7 +34,10 @@ spec:
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           {{- with .Values.scheduler }}
-          args: ["--server", "{{ .server }}", "--user", "{{ .user }}", "--pgpkey", "{{ .pgpkey }}"  {{- if .params   }}, "--params"  {{- range .params }}, "{{ . }}" {{- end }} {{- end }} ]
+          {{- if .command   }}
+          command: {{ .command }}
+          {{- end }}
+          args: ["--server", "{{ .server }}", "--user", "{{ .user }}", "--pgpkey", "{{ .pgpkey }}"  {{- if .params   }}, "--params"  {{- range .params }}, "{{ . }}" {{- end }} {{- end }} {{- if .type  }}, "--sched", "{{ .type }}" {{- end }} ]
           {{- end }}
           volumeMounts:
           - name: scheduler-key
