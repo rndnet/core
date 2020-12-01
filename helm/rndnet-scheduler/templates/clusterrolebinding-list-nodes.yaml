@@ -1,3 +1,4 @@
+{{- if .Values.serviceAccount.create -}}
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
@@ -12,4 +13,4 @@ roleRef:
   kind: ClusterRole
   name:  {{ include "rndnet-scheduler.fullname" . | printf "%s-list-nodes" }}
   apiGroup: rbac.authorization.k8s.io
-
+{{- end }}
