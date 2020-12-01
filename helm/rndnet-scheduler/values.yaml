@@ -91,6 +91,10 @@ scheduler:
   - "gpu_vendor=amd" 
   # Scheduler user private key content for RnDnet server connection
   key: ""
+  # Scheduler type
+  #type: "k8s"
+  # Image run command
+  #command="['rndnet_scheduler']" 
   # Not change
   pgpkey: "/etc/rndnet/secret.key"
 
