@@ -18,7 +18,7 @@ if [[ $is_create_nginx = y ]] ; then
 
   read -e -p "Create nginx cert installer? [y/n]? " -i "n"  is_cert_create
   if [[ $is_cert_create = y ]] ; then
-    read -e -p "Fullchain cer file path: " -i "/opt/rndnet/fullchain.cer" fullchain
+    read -e -p "Fullchain cer file path: " -i "/opt/rndnet/fullchain.cer" crt
     read -e -p "Key file path: "           -i "/opt/rndnet/server.yourdomain.key" key
   fi
   
@@ -68,11 +68,17 @@ EOF
 cat >  ${target_dir}/common  << EOF
 name=$name
 ns=$ns
+
 ihost=$ihost
 cloud_dbhost=$cloud_dbhost
+
 cert=$cert
 ext_ip=$ext_ip
 ingress_class=$ingress_class
+nginx_name=\$ingress_class
+ext_port=$ext_port
+crt=$crt
+key=$key
 EOF
 
 
@@ -96,37 +102,37 @@ if [[ $is_create_nginx = y ]] ; then
   cp -rv ${cur_dir}/helm/nginx  ${target_dir}/
 
   # Nginx controller
-  cat > nginx/common  << EOF
-. ../common
 
-name=\$ingress_class
-ext_port=$ext_port
-EOF
-
-cat > nginx/install.sh  << EOF
+  cat > nginx/install.sh  << EOF
 # https://docs.nginx.com/nginx-ingress-controller/installation/installation-with-helm/
 # helm repo add nginx-stable https://helm.nginx.com/stable
 # helm repo update
 
-. common
+. ../common
 
-helm install \$name -n \$ns    --set controller.service.type="ClusterIP" \\
+helm install \$nginx_name -n \$ns    --set controller.service.type="ClusterIP" \\
                              --set controller.service.externalIPs={\$ext_ip}  \\
                              --set controller.service.httpPort.enable=false \\
                              --set controller.service.httpsPort.enable=true --set controller.service.httpsPort.port=\$ext_port \\
                              --set controller.watchNamespace=\$ns \\
-                             --set controller.ingressClass=\$name \\
+                             --set controller.ingressClass=\$ingress_class \\
                              --set controller.defaultTLS.secret=\$ns/\$cert \\
                               nginx-stable/nginx-ingress
 EOF
 
-echo 
-echo "Do not forget add nginx helm repository!"
-echo "   helm repo add nginx-stable https://helm.nginx.com/stable"
-echo "   helm repo update"
-echo
+  echo 
+  echo "Do not forget add nginx helm repository!"
+  echo "   helm repo add nginx-stable https://helm.nginx.com/stable"
+  echo "   helm repo update"
+  echo
+
+  cat > nginx/uninstall.sh  << EOF
+. ../common
+helm delete \$nginx_name -n \$ns
+EOF
 
 fi
+
 
 
 if [[ $is_cert_create = y ]] ; then
@@ -135,16 +141,18 @@ if [[ $is_cert_create = y ]] ; then
      mkdir ${nginx_cert_dir}
 
      cat > ${nginx_cert_dir}/add-secret.sh << EOF
-kubectl create secret generic $cert -n $ns --from-file=tls.crt=$fullchain \\
-                                    --from-file=tls.key=$key
+. ../../common
+kubectl create secret generic \$cert -n \$ns --from-file=tls.crt=\$crt --from-file=tls.key=\$key
 EOF
 
      cat > ${nginx_cert_dir}/rm-secret.sh << EOF
-kubectl delete secrets/$cert -n $ns
+. ../../common
+kubectl delete secrets/\$cert -n \$ns
 EOF
 
      cat > ${nginx_cert_dir}/show-secret.sh << EOF
-kubectl get secret $cert -n $ns  -o jsonpath="{.data}"
+. ../../common
+kubectl get secret \$cert -n \$ns  -o jsonpath="{.data}"
 EOF
 
 fi

@@ -1,5 +1,5 @@
-. common
-n=$(kubectl get pods -n $ns | grep $name | awk '{print $1}')
+. ../common
+n=$(kubectl get pods -n $ns | grep $nginx_name | awk '{print $1}')
 kubectl exec --stdin --tty $n  -n $ns -- ls  /etc/nginx/conf.d/
 read -p "Enter conf name: " conf
 kubectl exec --stdin --tty $n  -n $ns -- cat /etc/nginx/conf.d/$conf
