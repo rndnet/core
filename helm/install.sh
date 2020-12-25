@@ -1,6 +1,6 @@
 . common 
  
-helm install -name $name  -n $ns ./rndnet-scheduler \
+helm install -name $name  $is_test -n $ns ./rndnet-scheduler \
  --set scheduler.server='https://yourserver.yourdomain:5000' \
  --set scheduler.user='rndnet_scheduler_user_name' \
  --set scheduler.params="{docker_image=rndnet/python-bfj:latest,gpu_vendor=nvidia}" \
