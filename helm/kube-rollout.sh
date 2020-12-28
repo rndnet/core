@@ -1,6 +1,6 @@
 . common
 
-cmd="kubectl get deployments -n $ns  | grep $name | awk '{print \$1}' "
+cmd="kubectl get deployments -n $ns  | grep ^$name | awk '{print \$1}' "
 
 c=$(eval "$cmd | wc -l")
 
