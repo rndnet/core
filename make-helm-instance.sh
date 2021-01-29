@@ -142,7 +142,8 @@ if [[ $is_cert_create = y ]] ; then
 
      cat > ${nginx_cert_dir}/add-secret.sh << EOF
 . ../../common
-kubectl create secret generic \$cert -n \$ns --from-file=tls.crt=\$crt --from-file=tls.key=\$key
+#kubectl create secret generic \$cert -n \$ns --from-file=tls.crt=\$crt --from-file=tls.key=\$key
+kubectl create secret tls \$cert -n \$ns --cert=\$crt --key=\$key
 EOF
 
      cat > ${nginx_cert_dir}/rm-secret.sh << EOF
