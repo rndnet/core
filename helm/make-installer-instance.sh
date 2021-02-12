@@ -1,6 +1,6 @@
 installer_dir="$(pwd)"
 
-read -e -p "New scheduler name:" -i "rndnet-sheduler-" name
+read -e -p "New scheduler name:" -i "rndnet-scheduler-" name
 target_dir="$(dirname $(dirname "$installer_dir"))"/$name
 
 read -e -p "Target dir:" -i ""${target_dir} target_dir
