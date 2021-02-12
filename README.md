@@ -5,7 +5,7 @@
 Install
 -------
 
-1. Run `bash make-helm-instance.sh` and set values for new rndnet server managment instance:
+1. Change dir to helm and Run `bash make-installer-instance.sh` and set values for new rndnet server managment instance:
   - New server name
   - Target dir
   - Kubernetes Namespace
@@ -22,11 +22,13 @@ Install
   and set values:
   - Fullchain cer full file path
   - Certificate key full file path
+  
+  If you have RnDnet server helm source and you wont use them then say "n" on question "Install from helm package (y) or from helm sources [any]?".
 
 
 2. Go to this target directory
 3. Modify files with valid settings
-    - install.sh - database connection rules, rabbitmq connection string, mail server params and others.
+    - install.sh - database name, database port, database connection rules, rabbitmq connection string, mail server params and others.
     - values.yaml - host aliaces and multiline database connection rules
 
 5. Run  `./install-dry-test.sh` for check settings.

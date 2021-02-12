@@ -1,8 +1,8 @@
-cur_dir="$(pwd)"
+installer_dir="$(pwd)"
 
 read -e -p "New server name:" -i "rndnet-server-" name 
 
-target_dir="$(dirname "$cur_dir")"/$name
+target_dir="$(dirname $(dirname "$installer_dir"))"/$name
 read -e -p "Target dir:" -i ""${target_dir} target_dir 
 
 read -e -p "Namespace: "  -i "default" ns
@@ -25,13 +25,20 @@ if [[ $is_create_nginx = y ]] ; then
    ingress_class=nginx-$name
 fi
 
+read -e -p "Install from helm package (y) or from helm sources [any]? " -i "y"  helm_install_from_package
+if [[ $helm_install_from_package = y ]] ; then
+  read -e -p "Define helm repository name: " -i "rndnet-charts"  helm_install_prefix
+else
+  read -e -p "Define helm sources path: " -i ${installer_dir}  helm_install_prefix
+fi
+
 
 mkdir -p ${target_dir}
 
 #Install.sh generator
 cat >  ${target_dir}/install.sh  << EOF
 . common
-helm install -name \$name \$is_test  -n \$ns ${cur_dir}/helm/rndnet-server \\
+helm install -name \$name \$is_test  -n \$ns $helm_install_prefix/rndnet-server \\
   --set server.workers=20 \\
   --set server.cleanup=false \\
   --set server.conf.connect.host=\$cloud_dbhost \\
@@ -81,25 +88,33 @@ crt=$crt
 key=$key
 EOF
 
-
-cp -v helm/values.yaml ${target_dir}/values.yaml
+cp -v ${installer_dir}/installer/values.yaml       ${target_dir}/values.yaml
+cp -v ${installer_dir}/installer/kube-rollout.sh   ${target_dir}/kube-rollout.sh
+cp -v ${installer_dir}/installer/kube-shell.sh     ${target_dir}/kube-shell.sh
+cp -v ${installer_dir}/installer/show-logs.sh      ${target_dir}/show-logs.sh
+cp -v ${installer_dir}/installer/show-rndnet-server-log.sh ${target_dir}/show-rndnet-server-log.sh
+cp -v ${installer_dir}/installer/show-secret.sh    ${target_dir}/show-secret.sh
+cp -v ${installer_dir}/installer/show-status.sh    ${target_dir}/show-status.sh
+cp -v ${installer_dir}/installer/uninstall.sh      ${target_dir}/uninstall.sh
+cp -v ${installer_dir}/installer/uninstall_all.sh  ${target_dir}/uninstall_all.sh
+cp -v ${installer_dir}/installer/install_all.sh    ${target_dir}/install_all.sh
 
 cd  ${target_dir}
-ln -sv ${cur_dir}/helm/kube-rollout.sh
-#ln -sv ${cur_dir}/helm/README.md
-ln -sv ${cur_dir}/helm/kube-shell.sh
-ln -sv ${cur_dir}/helm/show-logs.sh
-ln -sv ${cur_dir}/helm/show-rndnet-server-log.sh
-ln -sv ${cur_dir}/helm/show-secret.sh
-ln -sv ${cur_dir}/helm/show-status.sh
-ln -sv ${cur_dir}/helm/uninstall.sh
-ln -sv ${cur_dir}/helm/uninstall_all.sh
-ln -sv ${cur_dir}/helm/install_all.sh
+#ln -sv ${installer_dir}/installer/kube-rollout.sh
+##ln -sv ${installer_dir}/installer/README.md
+#ln -sv ${installer_dir}/installer/kube-shell.sh
+#ln -sv ${installer_dir}/installer/show-logs.sh
+#ln -sv ${installer_dir}/installer/show-rndnet-server-log.sh
+#ln -sv ${installer_dir}/installer/show-secret.sh
+#ln -sv ${installer_dir}/installer/show-status.sh
+#ln -sv ${installer_dir}/installer/uninstall.sh
+#ln -sv ${installer_dir}/installer/uninstall_all.sh
+#ln -sv ${installer_dir}/installer/install_all.sh
 
 
 if [[ $is_create_nginx = y ]] ; then
 
-  cp -rv ${cur_dir}/helm/nginx  ${target_dir}/
+  cp -rv ${installer_dir}/installer/nginx  ${target_dir}/
 
   # Nginx controller
 
@@ -157,3 +172,18 @@ kubectl get secret \$cert -n \$ns  -o jsonpath="{.data}"
 EOF
 
 fi
+
+
+if [[ $helm_install_from_package = y ]] ; then
+  echo 
+  echo "Do not forget add rndnet helm repository!"
+  echo "   helm repo add rndnet-charts https://server1.rndnet.net/helm/"
+  echo "   helm repo update"
+  echo
+fi
+
+echo "READ ME !!!!!!!!!!!"
+echo "Go to "$target_dir" directory"
+echo "Modify files with valid settings"
+echo " - install.sh - database name, database port, database connection rules, rabbitmq connection string, mail server params and others."
+echo " - values.yaml - host aliaces and multiline database connection rules"
