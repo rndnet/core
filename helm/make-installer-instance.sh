@@ -29,7 +29,7 @@ read -e -p "Install from helm package (y) or from helm sources [any]? " -i "y"  
 if [[ $helm_install_from_package = y ]] ; then
   read -e -p "Define helm repository name: " -i "rndnet-charts"  helm_install_prefix
 else
-  read -e -p "Define helm sources path: " -i ${installer_dir}/rndnet-server  helm_install_prefix
+  read -e -p "Define helm sources path: " -i ${installer_dir}  helm_install_prefix
 fi
 
 
@@ -153,7 +153,7 @@ fi
 if [[ $is_cert_create = y ]] ; then
 
      nginx_cert_dir=${target_dir}/nginx/cert
-     mkdir ${nginx_cert_dir}
+     mkdir -p ${nginx_cert_dir}
 
      cat > ${nginx_cert_dir}/add-secret.sh << EOF
 . ../../common
