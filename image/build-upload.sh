@@ -7,7 +7,7 @@ set -eou
 echo
 echo "Build ....."
 #podman build -t ${REP}:${TAG} -t ${REP}:${VER} --no-cache  -f Dockerfile
-podman build -t ${REP}:${TAG} --no-cache -f Dockerfile
+podman build -t ${REP}:${TAG} --no-cache --format docker -f Dockerfile
 
 echo
 echo Upload images
